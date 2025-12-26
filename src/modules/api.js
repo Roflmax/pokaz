@@ -111,6 +111,19 @@ export const API = {
         return false;
     },
 
+    async getGraphData(uploadFolder) {
+        if (!uploadFolder) return null;
+
+        try {
+            const response = await fetch(`/user_uploads/${uploadFolder}/_analysis_graph.json`);
+            if (!response.ok) return null;
+            return await response.json();
+        } catch (e) {
+            console.log('No graph data for', uploadFolder);
+            return null;
+        }
+    },
+
     async extractData(courtType, mode, text, file, caseNumber, uploadFolder, forceRefresh) {
         // Определяем ключ для поиска анализа
         let analysisKey = null;

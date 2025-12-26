@@ -85,6 +85,12 @@ const CaseGraph = {
     },
 
     buildGraph(data) {
+        // Проверяем новый формат с узлами и связями
+        if (data.узлы && data.связи) {
+            this.buildGraphFromNewFormat(data);
+            return;
+        }
+
         const nodesArray = [];
         const edgesArray = [];
         let nodeId = 1;
@@ -345,6 +351,86 @@ const CaseGraph = {
         this.network.on('blurNode', () => container.style.cursor = 'default');
     },
 
+    buildGraphFromNewFormat(data) {
+        const nodesArray = data.узлы.map((node, idx) => ({
+            id: node.id,
+            label: node.label,
+            color: {
+                background: node.цвет || '#667eea',
+                border: this.darkenColor(node.цвет || '#667eea'),
+                highlight: { background: node.цвет || '#667eea', border: '#333' },
+                hover: { background: node.цвет || '#667eea', border: '#333' }
+            },
+            font: { color: '#fff' },
+            data: { type: node.тип, subtype: node.подтип, full: node.данные }
+        }));
+
+        const edgesArray = data.связи.map(edge => ({
+            from: edge.от,
+            to: edge.к,
+            label: edge.тип,
+            arrows: 'to',
+            dashes: edge.стиль === 'dashed'
+        }));
+
+        this.nodes = new vis.DataSet(nodesArray);
+        this.edges = new vis.DataSet(edgesArray);
+
+        const container = document.getElementById('graphContainer');
+        if (!container || !window.vis) {
+            console.error('Graph container or vis.js not found');
+            return;
+        }
+
+        const options = {
+            nodes: {
+                shape: 'box',
+                margin: 12,
+                widthConstraint: { minimum: 100, maximum: 200 },
+                font: { size: 13, face: 'Arial', multi: true },
+                borderWidth: 2,
+                shadow: { enabled: true, size: 5, x: 2, y: 2 }
+            },
+            edges: {
+                font: { size: 11, color: '#555', strokeWidth: 0 },
+                color: { color: '#999', highlight: '#667eea' },
+                smooth: { type: 'curvedCW', roundness: 0.15 },
+                width: 1.5
+            },
+            physics: {
+                enabled: true,
+                solver: 'forceAtlas2Based',
+                forceAtlas2Based: {
+                    gravitationalConstant: -50,
+                    centralGravity: 0.01,
+                    springLength: 150,
+                    springConstant: 0.08
+                },
+                stabilization: { iterations: 100 }
+            },
+            interaction: { hover: true, tooltipDelay: 0, zoomView: true, dragView: true }
+        };
+
+        this.network = new vis.Network(container, { nodes: this.nodes, edges: this.edges }, options);
+
+        this.network.once('stabilizationIterationsDone', () => {
+            this.network.setOptions({ physics: false });
+            this.network.fit({ animation: true });
+        });
+
+        this.network.on('click', (params) => this.onNodeClick(params));
+        this.network.on('hoverNode', () => container.style.cursor = 'pointer');
+        this.network.on('blurNode', () => container.style.cursor = 'default');
+    },
+
+    darkenColor(hex) {
+        const num = parseInt(hex.replace('#', ''), 16);
+        const r = Math.max(0, (num >> 16) - 30);
+        const g = Math.max(0, ((num >> 8) & 0x00FF) - 30);
+        const b = Math.max(0, (num & 0x0000FF) - 30);
+        return '#' + (b | (g << 8) | (r << 16)).toString(16).padStart(6, '0');
+    },
+
     buildGroups() {
         const groups = {};
         for (const [key, colors] of Object.entries(this.colors)) {
@@ -462,8 +548,32 @@ const CaseGraph = {
 
     getData() {
         if (!window.AppState) return null;
+        // Сначала проверяем загруженный граф
+        if (window.AppState.currentGraphData) {
+            return window.AppState.currentGraphData;
+        }
         const cacheKey = `${window.AppState.currentUploadFolder || window.AppState.currentCaseNumber}_${window.AppState.currentMode}`;
         return window.AppState.cachedAnalysis?.[cacheKey] || window.AppState.extractedData;
+    },
+
+    async loadAndRender(container) {
+        // Попробуем загрузить граф из файла
+        if (window.AppState?.currentUploadFolder) {
+            try {
+                const response = await fetch(`/user_uploads/${window.AppState.currentUploadFolder}/_analysis_graph.json`);
+                if (response.ok) {
+                    const graphData = await response.json();
+                    window.AppState.currentGraphData = graphData;
+                    this.render(container);
+                    return;
+                }
+            } catch (e) {
+                console.log('No graph file, using analysis data');
+            }
+        }
+        // Fallback на обычные данные анализа
+        window.AppState.currentGraphData = null;
+        this.render(container);
     },
 
     showNoData(container) {
@@ -514,11 +624,12 @@ const CaseGraph = {
         const graphBtn = document.querySelector('.demo-btn[data-demo="graph"]');
         if (!graphBtn) return;
 
-        graphBtn.addEventListener('click', () => {
+        graphBtn.addEventListener('click', async () => {
             const container = document.getElementById('analysisContent');
             if (container) {
                 graphBtn.classList.add('active');
-                this.render(container);
+                container.innerHTML = '<div class="text-center py-5"><div class="spinner-border"></div><p class="mt-2">Загрузка графа...</p></div>';
+                await this.loadAndRender(container);
             }
         });
     }

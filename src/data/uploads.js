@@ -34,12 +34,13 @@ export const DEMO_UPLOADS = [
     "court_type": "civil",
     "created_at": "2025-12-26T17:47:48.935764",
     "content_length": 23640,
-    "has_analysis": false
+    "has_analysis": true
   }
 ];
 
 export const UPLOADS_WITH_ANALYSIS = [
   "20251218_214030_fcfd5b1e",
   "20251218_214334_03d9c285",
-  "20251218_214620_f76199dc"
+  "20251218_214620_f76199dc",
+  "20251226_174748_86dbb490"
 ];
