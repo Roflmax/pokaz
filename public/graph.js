@@ -436,7 +436,8 @@ const CaseGraph = {
                 hover: true,
                 tooltipDelay: 0,
                 zoomView: true,
-                dragView: true
+                dragView: true,
+                dragNodes: true
             }
         };
 
