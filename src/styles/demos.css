@@ -1,0 +1,271 @@
+/**
+ * demos.css - Стили для графа судебного дела
+ */
+
+/* ========================================
+   КНОПКА ГРАФА
+   ======================================== */
+
+.demo-buttons {
+    width: 100%;
+}
+
+.demo-btn {
+    width: 100%;
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border-color: #667eea;
+    color: #667eea;
+    font-weight: 500;
+}
+
+.demo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    background-color: rgba(102, 126, 234, 0.1);
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.demo-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.demo-btn i {
+    margin-right: 6px;
+}
+
+/* ========================================
+   ОБЁРТКА ГРАФА
+   ======================================== */
+
+.graph-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.graph-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 2px solid #e9ecef;
+    flex-shrink: 0;
+}
+
+.graph-header h6 {
+    font-weight: 700;
+    color: #495057;
+    margin: 0;
+}
+
+.graph-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.graph-controls .btn {
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+/* ========================================
+   КОНТЕЙНЕР ГРАФА
+   ======================================== */
+
+.graph-container {
+    height: 550px;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+    margin-bottom: 10px;
+}
+
+/* ========================================
+   ЛЕГЕНДА
+   ======================================== */
+
+.graph-legend {
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.legend-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: #495057;
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   ПАНЕЛЬ ДЕТАЛЕЙ УЗЛА
+   ======================================== */
+
+.node-details {
+    margin-top: 12px;
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.node-details.hidden {
+    display: none;
+}
+
+
+.node-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.node-details-header span {
+    font-weight: 600;
+    color: #495057;
+    font-size: 13px;
+}
+
+.btn-close-details {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #adb5bd;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.btn-close-details:hover {
+    color: #495057;
+}
+
+#nodeDetailsContent {
+    font-size: 12px;
+    color: #495057;
+}
+
+/* ========================================
+   СТИЛИ ДЛЯ ДЕТАЛЕЙ
+   ======================================== */
+
+.details-dl {
+    margin: 0;
+}
+
+.details-dl dt {
+    font-weight: 600;
+    color: #667eea;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-top: 8px;
+}
+
+.details-dl dt:first-child {
+    margin-top: 0;
+}
+
+.details-dl dd {
+    margin: 4px 0 0 0;
+    color: #495057;
+    line-height: 1.4;
+}
+
+.details-list {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0 0;
+}
+
+.details-list li {
+    position: relative;
+    padding-left: 12px;
+    margin-bottom: 4px;
+    font-size: 11px;
+}
+
+.details-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #667eea;
+}
+
+/* ========================================
+   ПЛЕЙСХОЛДЕР
+   ======================================== */
+
+.graph-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+    color: #adb5bd;
+}
+
+.graph-placeholder h5 {
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.graph-placeholder p {
+    color: #adb5bd;
+    margin: 0;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .legend-items {
+        gap: 6px 12px;
+    }
+
+    .legend-item {
+        font-size: 10px;
+    }
+
+    .node-details {
+        max-height: 150px;
+    }
+}
